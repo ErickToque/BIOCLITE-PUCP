@@ -1,0 +1,53 @@
+# Crear archivo .gitignore
+@"
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Entorno virtual
+/anaconda3/envs/BIOCLITE-PUCP/
+/usr/local/anaconda3/envs/BIOCLITE-PUCP/
+
+# Datos (NO SUBIR)
+*.csv
+*.xlsx
+*.xls
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.pkl
+*.joblib
+/data/BIOCLITE.csv
+/data/raw/
+/data/processed/
+
+# Notebooks outputs
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Resultados (opcional)
+/results/
+!results/.gitkeep
+"@ | Out-File -FilePath .gitignore -Encoding utf8
+
+# Crear archivo para mantener carpeta results
+New-Item -Path results\.gitkeep -ItemType File -Force
