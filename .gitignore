@@ -1,5 +1,3 @@
-# Crear archivo .gitignore
-@"
 # Python
 __pycache__/
 *.py[cod]
@@ -8,46 +6,75 @@ __pycache__/
 .Python
 env/
 venv/
+venv_bioclite/
 ENV/
 env.bak/
 venv.bak/
+*.egg-info/
+dist/
+build/
 
-# Entorno virtual
-/anaconda3/envs/BIOCLITE-PUCP/
-/usr/local/anaconda3/envs/BIOCLITE-PUCP/
-
-# Datos (NO SUBIR)
-*.csv
-*.xlsx
-*.xls
-*.npy
-*.npz
-*.h5
-*.hdf5
-*.pkl
-*.joblib
-/data/BIOCLITE.csv
-/data/raw/
-/data/processed/
-
-# Notebooks outputs
+# Jupyter Notebooks
 .ipynb_checkpoints/
-*.ipynb_checkpoints/
-*/.ipynb_checkpoints/*
+*.ipynb_checkpoints*
 
-# VS Code
+# Data files (GRANDES - NO SUBIR)
+data/raw/*.mat
+data/raw/*.csv
+data/raw/*.h5
+data/raw/*.hdf5
+data/processed/
+data/interim/
+data/external/
+
+# Models (pesados)
+models/*.pkl
+models/*.pth
+models/*.pt
+models/*.h5
+checkpoints/
+
+# Logs
+logs/
+*.log
+nohup.out
+
+# Results
+results/
+figures/
+plots/
+
+# IDE
 .vscode/
-*.code-workspace
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter
+.jupyter/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+
+# Secrets
+.env
+*.secret
+*.key
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
 
 # OS
-.DS_Store
 Thumbs.db
-desktop.ini
-
-# Resultados (opcional)
-/results/
-!results/.gitkeep
-"@ | Out-File -FilePath .gitignore -Encoding utf8
-
-# Crear archivo para mantener carpeta results
-New-Item -Path results\.gitkeep -ItemType File -Force
+Desktop.inisrc/explore*.py
+src/extract*.py
