@@ -1,0 +1,8 @@
+Ejercicio,Síntoma,UPDRS,Descripción,N_muestras,F1,AUC,Sensibilidad,Especificidad,Detectabilidad
+1,Temblor postural,3.15,Temblor de manos con brazos extendidos - frecuenci...,1083,0.516 ± 0.168,0.696 ± 0.141,0.478,0.583,🔴 BAJA
+2,Temblor de acción,3.16,Temblor durante movimientos voluntarios (dedo-nari...,1017,0.539 ± 0.122,0.622 ± 0.099,0.492,0.618,🔴 BAJA
+4,Pronación-supinación,3.4,Movimiento alternante de antebrazo - evalúa rigide...,172,0.586 ± 0.057,0.622 ± 0.083,0.582,0.595,🔴 BAJA
+5,Tapping de dedos,3.5,Movimiento rápido de índice contra pulgar...,678,0.724 ± 0.051,0.637 ± 0.158,0.807,0.660,🟡 MEDIA
+6,Tapping de pies,3.6,Movimiento de golpeo de pie contra el suelo...,691,0.797 ± 0.013,0.820 ± 0.043,0.820,0.782,🟢 ALTA
+7,Levantarse de silla,3.9,Transferencia de sedestación a bipedestación...,123,0.318 ± 0.186,0.877 ± 0.048,0.203,0.800,🔴 BAJA
+8,Marcha,3.10,"Patrón de caminar - evalúa pasos, giros, postura...",726,0.585 ± 0.085,0.709 ± 0.062,0.535,0.661,🔴 BAJA

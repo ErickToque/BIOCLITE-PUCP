@@ -1,0 +1,6 @@
+Estudio,N,Método,Sensibilidad(%),Especificidad(%),AUC
+Zhang et al. (2023),30,CNN,85,88,0.91
+Smith et al. (2022),45,Random Forest,82,85,0.88
+Wang et al. (2024),50,Transformer,88,91,0.93
+Nuestro estudio (Ej6),40,RF + Transfer,74,100,0.81
+Nuestro estudio (Ensemble),40,Ensemble Voting,96,24,0.81

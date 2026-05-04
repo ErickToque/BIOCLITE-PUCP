@@ -1,80 +1,40 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
+# Entorno virtual
 venv_bioclite/
+venv/
 ENV/
-env.bak/
-venv.bak/
-*.egg-info/
-dist/
-build/
 
-# Jupyter Notebooks
-.ipynb_checkpoints/
-*.ipynb_checkpoints*
-
-# Data files (GRANDES - NO SUBIR)
-data/raw/*.mat
+# Datos grandes
 data/raw/*.csv
-data/raw/*.h5
-data/raw/*.hdf5
+data/raw/*.mat
 data/processed/
-data/interim/
-data/external/
 
-# Models (pesados)
-models/*.pkl
-models/*.pth
-models/*.pt
-models/*.h5
-checkpoints/
+# Backups
+*_backup/
+*.bak
 
-# Logs
-logs/
+# Logs y temporales
+results/logs/
 *.log
-nohup.out
+*.pid
+__pycache__/
+*.pyc
 
-# Results
-results/
-figures/
-plots/
+# Modelos grandes (si hay)
+models/saved/*.pkl
+*.pt
+*.pth
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Archivos de sistema
 .DS_Store
-
-# Jupyter
-.jupyter/
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# MyPy
-.mypy_cache/
-
-# Secrets
-.env
-*.secret
-*.key
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.temp
-
-# OS
 Thumbs.db
-Desktop.inisrc/explore*.py
-src/extract*.py
+
+# Archivos temporales del paper
+*.aux
+*.out
+*.log
+*.bbl
+*.blg
+*.brf
+
+# Zip files
+*.zip

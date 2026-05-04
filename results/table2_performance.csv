@@ -1,0 +1,6 @@
+Ejercicio,Nombre,Sensibilidad(%),Especificidad(%),AUC,F1-score
+4,Pronación,69.6,50.0,0.63,0.57
+5,Tapping dedos,82.6,81.2,0.64,0.73
+6,Tapping pies,73.9,100.0,0.81,0.79
+7,Levantarse,47.8,56.2,0.55,0.48
+8,Marcha,95.7,6.2,0.55,0.42

@@ -1,0 +1,167 @@
+# =============================================================================
+# train_supervised_fixed.py - VERSIÓN CORREGIDA
+# =============================================================================
+
+import sys
+sys.path.insert(0, 'src')
+
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import RobustScaler
+from sklearn.model_selection import StratifiedGroupKFold
+from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score, roc_auc_score
+from imblearn.over_sampling import SMOTE
+import warnings
+warnings.filterwarnings('ignore')
+
+from data_loader import BIOCLITEDataset
+from preprocessing import IMUPreprocessor
+from utils import set_seed
+
+set_seed(42)
+
+# Configuración
+WINDOW_SIZE = 100
+STEP_SIZE = 100  # SIN SOLAPAMIENTO (evita data leakage)
+THRESHOLD = 0.5
+
+ejercicios = [4, 5, 6, 7, 8]
+ejercicios_nombres = {
+    4: "Pronación-supinación",
+    5: "Tapping dedos",
+    6: "Tapping pies (bradicinesia)",
+    7: "Levantarse silla",
+    8: "Marcha"
+}
+
+print("="*70)
+print("🏋️ ENTRENAMIENTO CORREGIDO - RANDOM FOREST + FEATURES")
+print("="*70)
+
+# Cargar datos
+loader = BIOCLITEDataset('data/raw/BIOCLITE_data_v2.csv')
+df = loader.load_data()
+df_supervised = df[df['Contexto_sesion'].isin([1, 2])].copy()
+
+preprocessor = IMUPreprocessor(fs=50)
+all_results = {}
+
+for ejercicio in ejercicios:
+    print(f"\n{'='*70}")
+    print(f"📋 EJERCICIO {ejercicio}: {ejercicios_nombres[ejercicio]}")
+    print(f"{'='*70}")
+    
+    df_ej = df_supervised[df_supervised['Ejercicio'] == ejercicio].copy()
+    
+    if len(df_ej) == 0:
+        print(f"  ⚠️ No hay datos")
+        continue
+    
+    # Extraer ventanas SIN SOLAPAMIENTO
+    X_features = []
+    y_labels = []
+    groups = []
+    
+    for session in df_ej['Sesion'].unique():
+        df_session = df_ej[df_ej['Sesion'] == session]
+        
+        acc = df_session[['Acc_X', 'Acc_Y', 'Acc_Z']].values
+        gyro = df_session[['Gyro_X', 'Gyro_Y', 'Gyro_Z']].values
+        
+        if len(acc) < WINDOW_SIZE:
+            continue
+        
+        # Ventanas no solapadas
+        for i in range(0, len(acc) - WINDOW_SIZE, STEP_SIZE):
+            acc_window = acc[i:i+WINDOW_SIZE]
+            gyro_window = gyro[i:i+WINDOW_SIZE]
+            
+            # Extraer features en lugar de usar raw signals
+            features = preprocessor.extract_features(acc_window, gyro_window)
+            X_features.append(list(features.values()))
+            
+            # Etiqueta
+            updrs = df_session['UPDRS'].iloc[0]
+            label = 1 if updrs not in [0, 99] else 0
+            y_labels.append(label)
+            
+            groups.append(df_session['subject_id'].iloc[0])
+    
+    X = np.array(X_features)
+    y = np.array(y_labels)
+    groups = np.array(groups)
+    
+    print(f"  Ventanas: {X.shape}")
+    print(f"  Features: {X.shape[1]}")
+    print(f"  Clases: Ausente={np.sum(y==0)}, Presente={np.sum(y==1)}")
+    
+    if len(np.unique(y)) < 2:
+        print(f"  ⚠️ Solo una clase")
+        continue
+    
+    # StratifiedGroupKFold (respeta grupos y mantiene proporción de clases)
+    sgkf = StratifiedGroupKFold(n_splits=min(5, len(np.unique(groups))), shuffle=True, random_state=42)
+    
+    results = {'accuracy': [], 'f1': [], 'recall': [], 'precision': [], 'auc': []}
+    
+    for fold, (train_idx, test_idx) in enumerate(sgkf.split(X, y, groups)):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        # Escalar
+        scaler = RobustScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+        
+        # SMOTE para balancear clases
+        smote = SMOTE(random_state=42, k_neighbors=min(5, np.sum(y_train==0)-1))
+        X_train_balanced, y_train_balanced = smote.fit_resample(X_train_scaled, y_train)
+        
+        # Random Forest (menos propenso a overfitting)
+        rf = RandomForestClassifier(
+            n_estimators=100,
+            max_depth=8,
+            min_samples_split=8,
+            min_samples_leaf=4,
+            class_weight='balanced',
+            random_state=42,
+            n_jobs=-1
+        )
+        
+        rf.fit(X_train_balanced, y_train_balanced)
+        y_pred = rf.predict(X_test_scaled)
+        y_prob = rf.predict_proba(X_test_scaled)[:, 1]
+        
+        results['accuracy'].append(accuracy_score(y_test, y_pred))
+        results['f1'].append(f1_score(y_test, y_pred, zero_division=0))
+        results['recall'].append(recall_score(y_test, y_pred, zero_division=0))
+        results['precision'].append(precision_score(y_test, y_pred, zero_division=0))
+        results['auc'].append(roc_auc_score(y_test, y_prob))
+    
+    if len(results['accuracy']) > 0:
+        all_results[ejercicio] = results
+        
+        print(f"\n  📊 RESULTADOS ({len(results['accuracy'])} folds):")
+        print(f"    Accuracy:  {np.mean(results['accuracy']):.3f} ± {np.std(results['accuracy']):.3f}")
+        print(f"    F1-score:  {np.mean(results['f1']):.3f} ± {np.std(results['f1']):.3f}")
+        print(f"    Recall:    {np.mean(results['recall']):.3f} ± {np.std(results['recall']):.3f}")
+        print(f"    Precision: {np.mean(results['precision']):.3f} ± {np.std(results['precision']):.3f}")
+        print(f"    AUC:       {np.mean(results['auc']):.3f} ± {np.std(results['auc']):.3f}")
+
+# Guardar resultados
+results_df = pd.DataFrame([{
+    'ejercicio': ej,
+    'nombre': ejercicios_nombres[ej],
+    'accuracy': np.mean(res['accuracy']),
+    'f1': np.mean(res['f1']),
+    'recall': np.mean(res['recall']),
+    'precision': np.mean(res['precision']),
+    'auc': np.mean(res['auc'])
+} for ej, res in all_results.items()])
+
+results_df.to_csv('results_fixed.csv', index=False)
+print("\n" + "="*70)
+print("✅ Resultados corregidos guardados en 'results_fixed.csv'")
+print(results_df.to_string())
+print("\n🎉 Correcciones aplicadas: Sin solapamiento + Features + SMOTE + RandomForest")

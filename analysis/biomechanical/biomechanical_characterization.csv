@@ -1,0 +1,6 @@
+,nombre,biomecanica,metricas,n_muestras,n_positivos,n_negativos
+4,Pronación-supinación,Rotación de antebrazo,"Velocidad angular, rango de movimiento",172,86,86
+5,Tapping dedos,Movimientos finos de dedos,"Frecuencia tapping, amplitud, ritmo",678,387,291
+6,Tapping pies,Movimientos de tobillo,"Frecuencia tapping, altura del pie",691,397,294
+7,Levantarse silla,Transferencia sedestación-bipedestación,"Tiempo levantarse, velocidad angular",123,24,99
+8,Marcha,Ciclo de la marcha,"Cadencia, longitud paso, asimetría",726,301,425

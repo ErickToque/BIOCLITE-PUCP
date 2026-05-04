@@ -1,0 +1,9 @@
+,F1,AUC
+Full Model (35 features),0.789,0.82
+Sin features frecuenciales,0.712,0.745
+Sin features temporales,0.734,0.768
+Solo acelerómetro,0.698,0.721
+Solo giroscopio,0.756,0.793
+Sin filtrado,0.723,0.751
+Ventana 1s (vs 2s),0.715,0.738
+Sin SMOTE,0.742,0.769

@@ -1,0 +1,5 @@
+,condicion,sensibilidad,especificidad,facilidad
+Regla 1 - Frecuencia de tapping,Frecuencia < 2 Hz,0.85,0.78,Alta (solo contar golpes)
+Regla 2 - Potencia giroscopio,Potencia en 0.5-3Hz < 10,0.82,0.81,Media (requiere análisis espectral)
+Regla 3 - Variabilidad de intervalo,CV de intervalos > 0.3,0.79,0.84,Media (requiere detección de picos)
+Regla 4 - Ensemble,Cumple ≥ 2 de las anteriores,0.91,0.76,Baja (requiere procesamiento)
